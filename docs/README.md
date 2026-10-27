@@ -1,5 +1,13 @@
 # PiKaraoke
 
+> **This is a fork of [PiKaraoke](https://github.com/vicwomg/pikaraoke) by vicwomg.** It adds AI vocal removal and synced KTV lyrics for any music video, both opt-in. These features are not part of the official PiKaraoke: they need a fast computer (an Apple Silicon Mac or a modern PC, not a Raspberry Pi) and a few GB of disk for the AI models. Install this fork with:
+>
+> ```
+> uv tool install "pikaraoke[vocal-removal] @ git+https://github.com/yuwei-liang/pikaraoke"
+> ```
+>
+> Leave out `[vocal-removal]` to get synced lyrics only, without the 2GB PyTorch download. Intel Macs are not supported for vocal removal. For anything else, use and support the [official PiKaraoke](https://github.com/vicwomg/pikaraoke).
+
 <img width="588" height="339" alt="Image" src="https://i.ibb.co/Z6MTM4wt/pikaraoke-readme.png" />
 
 PiKaraoke is a cross-platform karaoke server that brings the professional "KTV" experience to your home. It transforms your computer or Raspberry Pi into a dedicated karaoke station with a full-screen player and an instant web interface. Guests can join by simply scanning a QR code—no app downloads required—to browse your local library, manage the queue, and access countless karaoke hits from YouTube.
