@@ -1,150 +1,77 @@
-# PiKaraoke
-
-> **This is a fork of [PiKaraoke](https://github.com/vicwomg/pikaraoke) by vicwomg.** It adds AI vocal removal and synced KTV lyrics for any music video, both opt-in. These features are not part of the official PiKaraoke: they need a fast computer (an Apple Silicon Mac or a modern PC, not a Raspberry Pi) and a few GB of disk for the AI models. Install this fork with:
->
-> ```
-> uv tool install "pikaraoke[vocal-removal] @ git+https://github.com/yuwei-liang/pikaraoke"
-> ```
->
-> Leave out `[vocal-removal]` to get synced lyrics only, without the 2GB PyTorch download. Intel Macs are not supported for vocal removal. For anything else, use and support the [official PiKaraoke](https://github.com/vicwomg/pikaraoke).
+# PiKaraoke, KTV edition
 
 <img width="588" height="339" alt="Image" src="https://i.ibb.co/Z6MTM4wt/pikaraoke-readme.png" />
 
-PiKaraoke is a cross-platform karaoke server that brings the professional "KTV" experience to your home. It transforms your computer or Raspberry Pi into a dedicated karaoke station with a full-screen player and an instant web interface. Guests can join by simply scanning a QR code—no app downloads required—to browse your local library, manage the queue, and access countless karaoke hits from YouTube.
+Sing to any music video, KTV style. This is a fork of [PiKaraoke](https://github.com/vicwomg/pikaraoke) by vicwomg that adds:
 
-- 📱 Instant Mobile Remote: Search and queue songs from any smartphone—just scan and sing.
-- 📺 Dedicated Player: High-performance splash screen that can be opened on any web browser for a true karaoke room feel.
-- 🌐 YouTube & Local Media: Play your own files or access more from the web.
-- 🎹 Live Pitch Shifting: Adjust the key of any song to match your vocal range.
-- 🎤 AI Vocal Removal (optional): Turn any music video into a karaoke track, keeping the backing vocals.
-- 📝 Synced Lyrics: Overlay KTV-style lyrics on videos that don't show their own.
-- 🛠️ Admin Control: Manage the queue and settings via a password-protected admin mode.
-- 📊 Session Management: Every night is recorded automatically—browse the play history, then see which songs and performers topped the charts.
-- 🎯 Hyper-accurate vocal performance scoring system: (not really, it's random. But kind of fun!)
-- 🐧 Lightweight & Versatile: Runs anywhere from a basic Raspberry Pi to a high-end PC.
+- **AI vocal removal.** Queue a song, and its lead vocal is taken out in the background before its turn. Backing vocals are kept by default; if the singer can still be heard, the song is redone with every voice removed. An Original/Instrumental switch is in the player controls.
+- **Synced lyrics.** Lyrics are fetched from [LRCLIB](https://lrclib.net), lined up with the singing, and shown KTV style on videos that don't have their own. Lyrics nobody has timed are timed by recognizing the sung words. Buttons in the player controls move lyrics that run early or late.
+- **Queue status.** The queue shows what each song has ready, what is still being prepared and how long it will take, and lets the next song go first.
 
-Love PiKaraoke? This project is independently maintained and free for everyone to enjoy. If PiKaraoke has made your parties better and you'd like to help keep the project alive and growing, feel free to [buy me a coffee](https://www.buymeacoffee.com/vicwomg)! <br/><br/>
-<a href="https://www.buymeacoffee.com/vicwomg" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+Everything else is PiKaraoke: guests scan a QR code to search YouTube and your own songs, queue them from their phones, and change the key to fit their voice.
 
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-green.svg)](https://conventionalcommits.org)
+The official PiKaraoke chose not to include these features because they need a fast computer. If you have a Raspberry Pi or an older machine, use the [official PiKaraoke](https://github.com/vicwomg/pikaraoke) instead, and if it makes your parties better, [buy its author a coffee](https://www.buymeacoffee.com/vicwomg).
 
-## Table of Contents
+## 中文简介
 
-- [Supported Devices / OS / Platforms](#supported-devices--os--platforms)
-- [Quick Install](#quick-install)
-- [Manual Installation](#manual-installation-advanced-users)
-- [Usage](#usage)
-- [Docker](#docker-instructions)
-- [Screenshots](#screenshots)
-- [Contributing](#contributing)
-- [Troubleshooting](#troubleshooting-and-guides)
+PiKaraoke 的 KTV 版：任何 YouTube 音乐视频都能当伴奏唱。点歌后自动用 AI 去掉原唱（默认保留和声），自动下载并对齐同步歌词，队列里显示每首歌的准备进度。需要 Apple Silicon 的 Mac 或较新的电脑，安装方法见下面的 [Install](#install)。
 
-## Supported Devices / OS / Platforms
+## What you need
 
-- OSX
-- Windows
-- Linux
-- Raspberry Pi 4 or higher (Pi3 works ok with overclocking)
+- An Apple Silicon Mac, or a modern Windows or Linux PC. Intel Macs and Raspberry Pis can't run vocal removal.
+- About 5GB of disk for the AI models and PyTorch, downloaded on first use.
+- A modern web browser (Chrome, Edge or Safari) for the player screen.
 
-## Quick Install
+On an Apple Silicon Mac, a 4-minute song takes about 4 minutes to have its vocals removed, and about 9 more when every voice has to come out. Songs are prepared while earlier ones are sung, so after the first few there is usually no wait.
 
-For a streamlined installation that handles all dependencies (uv, ffmpeg, deno) and installs PiKaraoke, run the following in your terminal:
+## Install
 
-### Linux & macOS
+1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/), FFmpeg and Deno. On a Mac with [Homebrew](https://brew.sh):
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/vicwomg/pikaraoke/master/build_scripts/install/install.sh | bash
-```
+   ```sh
+   brew install uv ffmpeg deno
+   ```
 
-### Windows (installer)
+   On Windows and Linux, get [FFmpeg](https://ffmpeg.org/download.html) and [Deno](https://deno.com/) from their sites.
 
-Download `PiKaraoke-<version>-setup.exe` from the [latest release](https://github.com/vicwomg/pikaraoke/releases) and run it. It adds Start Menu and desktop shortcuts.
+2. Install this fork:
 
-Windows shows a blue "Windows protected your PC" screen because the installer is unsigned. Click **More info**, then **Run anyway**.
+   ```sh
+   uv tool install "pikaraoke[vocal-removal] @ git+https://github.com/yuwei-liang/pikaraoke"
+   ```
 
-To uninstall, use **Settings > Apps**.
+   Leave out `[vocal-removal]` for synced lyrics only, without the 2GB PyTorch download. If you already have the official PiKaraoke, this replaces it, and your songs and settings are kept.
 
-### Windows (PowerShell)
+3. Run `pikaraoke`, open Settings, and turn on "Remove vocals from queued songs" and "Add synced lyrics to queued songs".
 
-```powershell
-irm https://raw.githubusercontent.com/vicwomg/pikaraoke/master/build_scripts/install/install.ps1 | iex
-```
-
-To uninstall, swap `install.ps1` for `uninstall.ps1`.
-
-After installation, you can launch pikaraoke from the command line with `pikaraoke` or from a desktop shortcut. Re-running the above command will update a previous pikaraoke installation to the latest version.
-
-Uninstalling removes the pikaraoke package and its shortcuts. Your songs, settings, ffmpeg, deno and uv are left in place.
-
-## Manual installation (advanced users)
-
-### Prerequisites
-
-- A modern web browser (Chrome/Chromium/Edge recommended)
-- Python 3.10 or greater: [Python downloads](https://www.python.org/downloads/)
-- FFmpeg (preferably a build with lib-rubberband for transposing): [FFmpeg downloads](https://ffmpeg.org/download.html)
-- A js runtime installed to your PATH. [Node.js](https://nodejs.org/en/download/) is most common, [Deno](https://deno.com/) is probably easiest for non-developers.
-
-### Install the pikaraoke package
-
-We recommend installing pikaraoke via [uv](https://github.com/astral-sh/uv).
+To update to the latest version, run the install command again with `--reinstall`:
 
 ```sh
-uv tool install pikaraoke
+uv tool install --reinstall "pikaraoke[vocal-removal] @ git+https://github.com/yuwei-liang/pikaraoke"
 ```
 
-You may alternately use the standard python `pip install pikaraoke` installer if you are familiar with virtual environments or you are not concerned with global package isolation.
-
-#### Optional: AI vocal removal
-
-Removing vocals runs an AI model ([Mel-Band RoFormer karaoke](https://github.com/nomadkaraoke/python-audio-separator)) that takes out the lead vocal and keeps the backing vocals. It needs PyTorch, about 2GB, so it is a separate extra:
-
-```sh
-uv tool install "pikaraoke[vocal-removal]"
-```
-
-Then turn on "Remove vocals from queued songs" in Settings. Songs are processed in the background as they are queued, and the player controls gain an Original/Instrumental switch once a song is ready. The queue shows what each song has ready and what is still being prepared, with a time estimate once one separation has been timed; a song whose turn comes before its vocals are off can let the next song go first. The first run downloads a 900MB model. A three-minute song takes about 2.5 minutes on an Apple Silicon Mac; expect it to be far slower on a CPU-only machine, and impractical on a Raspberry Pi. Intel Macs are not supported.
-
-Some choruses are sung in stacked layers that the karaoke model takes for backing vocals and leaves in. Each new karaoke track is checked by speech recognition (it comes with the same extra) for lyrics still being sung in it, and a song that fails is separated again with every voice removed ([BS-RoFormer](https://github.com/nomadkaraoke/python-audio-separator), another 600MB model), backing vocals included. The check adds under a minute per song; the second separation takes about twice as long as the first. If the singer can still be heard on a song that passed, "Remove all vocals" under the vocals switch does the same for it, from its next play. Turning off "Keep backing vocals" in Settings removes every voice from every song instead.
-
-Synced lyrics need no extra: turn on "Add synced lyrics to queued songs" in Settings. Lyrics come from [LRCLIB](https://lrclib.net) and are only added to videos that don't show lyrics themselves. Lyrics timed to a recording of the video's length are used as they are. With vocal removal on, lyrics for a different edit, such as a music video with its own intro, are also lined up against the separated lead vocal, and songs whose lyrics nobody has timed get them timed by speech recognition ([faster-whisper](https://github.com/SYSTRAN/faster-whisper)) on that vocal; this downloads a 1.6GB model on first use and takes under a minute per song on an Apple Silicon Mac. Lyrics timed either way are marked as possibly off in the player controls. Lyrics that finish while their song is already playing appear without a restart. If a song's lyrics still run early or late, the Lyrics timing buttons in the player controls move them half a second at a time, and the correction is saved with the song.
+To go back to the official PiKaraoke, run `uv tool uninstall pikaraoke`, then `uv tool install pikaraoke`.
 
 ## Usage
-
-Run pikaraoke from the command line with:
 
 ```sh
 pikaraoke
 ```
 
-Launches the player in "headed" mode via your default browser. Scan the QR code to connect mobile remotes. Use `pikaraoke --headless` to run as a background server for external browsers.
+This opens the player in your default browser. Put it on the TV, and guests scan the QR code to queue songs. Use `pikaraoke --headless` to run it as a background server and open the player in any browser yourself. `pikaraoke --help` lists the other options.
 
-See the help command `pikaraoke --help` for available options.
+In Settings:
 
-To upgrade to the latest version of pikaraoke, run:
+- "Keep backing vocals" is on by default. Turn it off to remove every voice from every song; it takes about twice as long.
+- If you can still hear the singer on a song, "Remove all vocals" under the vocals switch redoes it with every voice out, from its next play.
 
-```sh
-uv tool upgrade pikaraoke
-```
+Lyrics timed by this fork are marked as possibly off in the player controls. Lyrics are only added to videos that don't show their own.
 
-## Docker instructions
+## How it works
 
-Run PiKaraoke in Docker using the command below. Note the requirements for port mapping, LAN IP specification, and persistent volume mounts (set to ~/.pikaraoke in the example for simplicity):
-
-```sh
-docker run -p 5555:5555 \
-  -e TZ=Europe/London \
-  -v ~/pikaraoke-songs:/app/pikaraoke-songs \
-  -v ~/.pikaraoke:/home/pikaraoke/.pikaraoke \
-  vicwomg/pikaraoke:latest \
-  -u http://<YOUR_LAN_IP>:5555
-```
-
-Set `TZ` to your own timezone, taken from the "TZ identifier" column of the [tz database list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
-
-For more information and a configurable docker-compose example, [see official Dockerhub repo](https://hub.docker.com/r/vicwomg/pikaraoke)
-
-To run under a path prefix (e.g., `/karaoke`), add `--base-path /your-path` and set `-u` to the public origin. Example: `--base-path /karaoke -u https://example.com`. PiKaraoke will generate links under `/karaoke` automatically. For reverse proxy setups, the proxy must forward both HTTP and WebSocket traffic for that path to PiKaraoke. Path-based nginx-proxy setups typically also need `VIRTUAL_PATH=/karaoke` with `VIRTUAL_DEST=/`.
+- Vocal removal runs [audio-separator](https://github.com/nomadkaraoke/python-audio-separator) with the Mel-Band RoFormer karaoke model (900MB), which keeps backing vocals. Each result is checked by speech recognition for lyrics still being sung; a song that fails is separated again with BS-RoFormer (600MB), which takes out every voice.
+- Lyrics come from LRCLIB. Lyrics timed to a recording of the video's length are used as they are; others are lined up against the separated vocal. Untimed lyrics are timed with [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (1.6GB model).
+- Prepared tracks and lyrics are saved next to each song, so each song is only prepared once.
 
 ## Screenshots
 
@@ -155,15 +82,14 @@ To run under a path prefix (e.g., `/karaoke`), add `--base-path /your-path` and 
 <img width="250" alt="pikaraoke-search" src="images/screenshot-songs-search.png">
 <img width="250" alt="pikaraoke-add-new" src="images/screenshot-add-new.png">
 <img width="250" alt="pikaraoke-play-history" src="images/screenshot-play-history.png">
-<img width="400" height="300" alt="pikaraoke-tv2" src="https://user-images.githubusercontent.com/4107190/95813564-019fa200-0ccd-11eb-95e1-57a002c357a3.png">
 </div>
 
-## Contributing
+## Help and contributing
 
-Contributions are welcome. See the [development guide](development.md) for setup, tests and the PR conventions.
+For problems with the PiKaraoke basics, see the official [troubleshooting wiki](https://github.com/vicwomg/pikaraoke/wiki/Troubleshooting). Vocal removal and lyrics are only in this fork, so don't report their problems to the official project.
 
-## Troubleshooting and guides
+To work on the code, see the [development guide](development.md).
 
-See the [Troubleshooting wiki](https://github.com/vicwomg/pikaraoke/wiki/Troubleshooting) for help with issues.
+## Credits
 
-There are also some great guides [on the wiki](https://github.com/vicwomg/pikaraoke/wiki/) to running pikaraoke in all manner of bizarre places including Android, Chromecast, and embedded TVs!
+PiKaraoke is created and maintained by [vicwomg](https://github.com/vicwomg) and its contributors. This fork follows its updates.
